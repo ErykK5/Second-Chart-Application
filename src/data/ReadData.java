@@ -13,9 +13,11 @@ public class ReadData {
     private float step;
     private int numb;
     private List<String> arr;
+    private Float[][] values;
+    private float nullVal;
 
     public void start() {
-        String fileName = "./src/com/W.LAS";
+        String fileName = "./src/com/SOB.LAS"; //W.LAS
         File file = new File(fileName);
 
         if( !file.exists() ) {
@@ -45,6 +47,12 @@ public class ReadData {
                     s = s.replace(" ","");
                     setStep(Float.valueOf(s));
                 }
+                if (line.contains("NULL.")) {
+                    String s = line.substring(6);
+                    s = s.replace(":","");
+                    s = s.replace(" ","");
+                    setNullVal(Float.valueOf(s));
+                }
 
                 if (line.contains("~A")) {
                     String s = line.substring(2);
@@ -65,32 +73,48 @@ public class ReadData {
                 }
 
                 if (line.contains("#") && line.contains("M") && !line.contains("E")) {
-                    lock = 0;
-                    break;
-                }
-
-                if( lock == 0 ) {
-                    Float[][] numbers = new Float[getNumb()][];
-                    List<String> l = new ArrayList<String>();
-                    String[] x = line.split(" ");
-                    for (String q : x ) {
-                        if ( Integer.valueOf(q) > 0 ) {
-                            l.add( q );
-                        }
-                    }
-
-                    for (int i = 0; i < getNumb(); i++) {
-                        numbers[i][y] = Float.valueOf(l.get(i));
-                    }
-                    y++;
+                    break;      //read param
                 }
             }
+
+            Float[][] numbers = new Float[getNumb()][(int)((getStop()-getStrt())/getStep()+2)];
+
+            while ((line = br.readLine()) != null) {
+                List<String> l = new ArrayList<String>();
+                String[] x = line.split(" ");
+                for (String q : x ) {
+                    if (q.length() > 0) {
+                        l.add( q );
+                    }
+                }
+
+                for (int i = 0; i < getNumb(); i++) {
+                    numbers[i][y] = Float.valueOf(l.get(i));
+                }
+                y++;
+            }
+            setValues(numbers);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public float getNullVal() {
+        return nullVal;
+    }
+
+    public void setNullVal(float nullVal) {
+        this.nullVal = nullVal;
+    }
+
+    public Float[][] getValues() {
+        return values;
+    }
+
+    public void setValues(Float[][] values) {
+        this.values = values;
     }
 
     public List<String> getArr() {

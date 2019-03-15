@@ -2,33 +2,26 @@ package com;
 
 import data.ReadData;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
-
-import java.net.URL;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        ReadData rd = new ReadData();
-        rd.start();
-
-
         primaryStage.setTitle("JavaFX");
-        primaryStage.setMinHeight(500);
-        primaryStage.setMinWidth(500);
+        primaryStage.setMinHeight(200);
+        primaryStage.setMinWidth(200);
 
-        final URL location = ChartController.class.getResource("Chart.fxml");
-        final FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(location);
-        final Parent root = loader.load(location.openStream());
-
-        final Scene scene = new Scene(root, 1200, 700);
-
+        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        final Scene scene = new Scene(root, 600, 300);
         final String fancyChartCss = "css/chart.css";
 
         scene.getStylesheets().addAll(fancyChartCss);
