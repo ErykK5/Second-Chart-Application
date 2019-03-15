@@ -15,11 +15,22 @@ public class ReadData {
     private List<String> arr;
     private Float[][] values;
     private float nullVal;
+    private File file;
+    private String path;
+
+    public ReadData(File file) {
+        this.file = file;
+    }
+
+    public ReadData(String path) {
+        this.path = path;
+    }
+
+    public ReadData() {
+    }
 
     public void start() {
-        String fileName = "./src/com/SOB.LAS"; //W.LAS
-        File file = new File(fileName);
-
+        File file = this.file;
         if( !file.exists() ) {
             System.out.println("File not found!");
         }

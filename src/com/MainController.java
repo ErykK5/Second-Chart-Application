@@ -5,14 +5,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,14 @@ public class MainController {
     int index = 0;
 
     public void initialize() {
-        ReadData rd = new ReadData();
+
+        FileChooser fileChooser = new FileChooser();
+        Stage s = Main.getPrimaryStage();
+        File selected = fileChooser.showOpenDialog(s);
+
+        ReadData rd = new ReadData(selected);
         rd.start();
+        s.close();
 
         toggleButton.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             if( newValue ) {
@@ -61,29 +69,12 @@ public class MainController {
     public void createChart(ReadData rd) {
         oy.setAutoRanging(false);
 
-        //oy.setLowerBound(rd.getStop());
-        //oy.setUpperBound(rd.getStrt());
-
         oy.setLowerBound((int)rd.getStrt());
         oy.setUpperBound((int)rd.getStop());
 
         oy.setTickUnit(10);
         lineChart.rotateProperty().setValue(180);
 
-        //oy.setAnimated(false);
-        /*
-        oy.setTickLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                return String.valueOf(object.intValue() + 1 );
-            }
-
-            @Override
-            public Number fromString(String string) {
-                return null;
-            }
-        });
-        */
         lineChart.setLegendVisible(false);
         lineChart.setCreateSymbols(false);
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.Y_AXIS);
@@ -119,19 +110,18 @@ public class MainController {
 
     public void loadData( int n,ReadData rd, Boolean isDec ) {
         lineChart.setData(FXCollections.observableArrayList());
+
         XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
         Float[][] arr = rd.getValues();
         if( isDec ) {
-            //oy.setLowerBound(rd.getStop());
-            //oy.setUpperBound(rd.getStrt());
-            for (int i = 0; i < (int) ((rd.getStop() - rd.getStrt()) / rd.getStep() + 1); i++) {
+            for (int i = 0; i < (int) ((rd.getStop() - rd.getStrt()) / rd.getStep()); i++) {
                 if(arr[n][i] == rd.getNullVal())
                     continue;
                 series.getData().add(new XYChart.Data<Number, Number>(arr[n][i], arr[0][i]));
             }
         } else {
             Float[][] logArr = new Float[][]{};
-                for (int i = 0; i < (int) ((rd.getStop() - rd.getStrt()) / rd.getStep() + 1); i++) {
+                for (int i = 0; i < (int) ((rd.getStop() - rd.getStrt()) / rd.getStep()); i++) {
                     if(arr[n][i] == rd.getNullVal())
                         continue;
                     series.getData().add(new XYChart.Data<Number, Number>(Math.log10(arr[n][i]), arr[0][i]));
@@ -139,34 +129,34 @@ public class MainController {
             ox.setTickLabelFormatter(new StringConverter<Number>() {
                 @Override
                 public String toString(Number object) {
-                    if ( object.intValue() == 0 ){
+                    if ( object.doubleValue() == 0.0 ){
                         return "10^0";
                     }
-                    if ( object.intValue() == 1 ){
+                    if ( object.doubleValue() == 1.0 ){
                         return "10^1";
                     }
-                    if ( object.intValue() == 2 ){
+                    if ( object.doubleValue() == 2.0 ){
                         return "10^2";
                     }
-                    if ( object.intValue() == 3 ){
+                    if ( object.doubleValue() == 3.0 ){
                         return "10^3";
                     }
-                    if ( object.intValue() == 4 ){
+                    if ( object.doubleValue() == 4.0 ){
                         return "10^4";
                     }
-                    if ( object.intValue() == 5 ){
+                    if ( object.doubleValue() == 5.0 ){
                         return "10^5";
                     }
-                    if ( object.intValue() == 6 ){
+                    if ( object.doubleValue() == 6.0 ){
                         return "10^6";
                     }
-                    if ( object.intValue() == 7 ){
+                    if ( object.doubleValue() == 7.0 ){
                         return "10^7";
                     }
-                    if ( object.intValue() == 8 ){
+                    if ( object.doubleValue() == 8.0 ){
                         return "10^8";
                     }
-                    if ( object.intValue() == 9 ){
+                    if ( object.doubleValue() == 9.0 ){
                         return "10^9";
                     }
                     return null;
